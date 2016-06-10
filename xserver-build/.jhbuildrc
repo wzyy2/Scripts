@@ -1,0 +1,76 @@
+#!python
+#######################################################################################
+# This is a checkout and build configuration for building Xorg
+#
+# This can be copied to ~/.jhbuildrc  and then run 'jhbuild build xserver'
+#
+#######################################################################################
+moduleset = 'http://cgit.freedesktop.org/xorg/util/modular/plain/xorg.modules'
+checkoutroot = '~/sources/xorg/git'
+modules = [ 'xorg' ]
+prefix = os.environ['DISCIMAGE'] +'/usr/local'
+
+autogenargs = ' --disable-static'
+# autogenargs += ' --disable-dri2 --with-driver=dri'
+autogenargs += ' --enable-dri2 -enable-dri'
+autogenargs += ' --cache-file=' + checkoutroot + '/autoconf-cache'
+# lots of people really like to always look in /var/log, but change if
+# you want the log files out of place
+autogenargs += ' --with-log-dir=/var/log'
+autogenargs += ' --with-mesa-source=' + checkoutroot + '/mesa'
+autogenargs += ' --enable-malloc0returnsnull'
+
+os.environ['ACLOCAL'] = 'aclocal -I ' + prefix + '/share/aclocal/'
+os.environ['INSTALL'] = os.path.expanduser('~/bin/install-check')
+
+# Enabled debugging for xserver
+os.environ['CFLAGS'] = '-g'
+os.environ['CPPFLAGS'] = '-g'
+
+# Setup environment for cross compiling
+
+os.environ['BUILD'] = ''
+os.environ['HOST'] = 'arm-linux-gnueabihf'
+os.environ['TARGET'] = 'arm-linux-gnueabihf'
+
+cross_compile_prefix = os.environ['CROSS_COMPILE']
+tools = {'ADDR2LINE': 'addr2line',
+    'AS': 'as', 'CC': 'gcc', 'CPP': 'cpp',
+    'CPPFILT': 'c++filt', 'CXX': 'g++',
+    'GCOV': 'gcov', 'LD': 'ld', 'NM': 'nm',
+    'OBJCOPY': 'objcopy', 'OBJDUMP': 'objdump',
+    'READELF': 'readelf', 'SIZE': 'size',
+    'STRINGS': 'strings', 'AR': 'ar', 
+        'RANLIB': 'ranlib', 'STRIP': 'strip'}
+
+tools_args = str()
+for tool in tools.keys():
+    fullpath_tool = cross_compile_prefix + tools[tool]
+    os.environ[tool] = fullpath_tool
+
+autogenargs += ' --build='+os.environ['BUILD']
+autogenargs += ' --host='+os.environ['HOST']
+autogenargs += ' --target='+os.environ['TARGET']
+
+for tool in ('AR', 'RANLIB', 'STRIP', 'AS', 'OBJDUMP', 'NM'):
+    autogenargs += ' '+tool+'="'+os.environ[tool]+'" '
+
+module_autogenargs['libGL'] = autogenargs + ' --without-demos --with-dri-drivers="swrast" --disable-glw'
+module_autogenargs['mesa-mesa'] = autogenargs + ' --with-dri-drivers=swrast --without-gallium-drivers'
+module_autogenargs['libXt'] = autogenargs + ' --disable-install-makestrs'
+module_autogenargs['xserver'] = autogenargs + ' --enable-debug'
+module_autogenargs['pixman'] = autogenargs + ' --disable-gtk'
+module_autogenargs['hal'] = autogenargs + ' --disable-pci-ids'
+module_autogenargs['libXfont'] = autogenargs + ' --disable-freetype'
+
+# For expat and zlib
+os.environ['CFLAGS'] += ' -I' + os.environ['DISCIMAGE'] + '/usr/local/include/'
+os.environ['CPPFLAGS'] += ' -IHello -I' + os.environ['DISCIMAGE'] + '/usr/local/include/'
+os.environ['LDFLAGS'] = ' -L' + os.environ['DISCIMAGE'] + '/usr/local/lib/'
+os.environ['LDFLAGS'] += ' -Wl,--rpath -Wl,' + '/usr/local/lib/'  #rpath is relative to where it is run from - DISCIMAGE 
+
+# Just in case zlib or expat were installed here
+os.environ['CFLAGS'] += ' -I' + os.environ['DISCIMAGE'] + '/usr/include/'
+os.environ['CPPFLAGS'] += ' -I' + os.environ['DISCIMAGE'] + '/usr/include/'
+os.environ['LDFLAGS'] += ' -L' + os.environ['DISCIMAGE'] + '/usr/lib/'
+os.environ['LDFLAGS'] += ' -Wl,--rpath -Wl,' + '/usr/lib/'
