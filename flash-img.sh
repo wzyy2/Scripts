@@ -11,7 +11,7 @@ case ${METHOD} in
 		sudo ~/bin/upgt di resource resource.img
 	;;
 	"gpt")
-		sudo fastboot -i 0x2207 flash boot_a  kernel.img
+		sudo fastboot -i 0x2207 flash boot_a  kernel2.img
 	;;
 esac
 
