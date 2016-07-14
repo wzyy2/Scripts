@@ -60,3 +60,8 @@ scripts/mkkrnlimg arch/arm/boot/zImage kernel.img>/dev/null
 echo '  Image:  kernel.img is ready'
 scripts/resource_tool arch/arm/boot/dts/${DTB}
 echo '  Image:  resource.img (with ${DTB} is ready'
+
+cat arch/arm/boot/zImage arch/arm/boot/dts/${DTB} > kernel2.img.zimage
+mkimage -A arm -O linux -T kernel -C none -a 0x60800800 -d kernel2.img.zimage kernel2.img
+rm kernel2.img
+echo '  Image:  kernel2.img (with ${DTB} is ready'
