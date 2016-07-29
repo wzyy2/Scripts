@@ -17,8 +17,10 @@
 #define CONFIG_RANDOM_UUID
 #define PARTS_DEFAULT \
 	"uuid_disk=${uuid_gpt_disk};" \
-	"name=boot,start=4M,size=64M,uuid=${uuid_gpt_boot};" \
-	"name=rootfs,size=-,bootable,uuid=${uuid_gpt_rootfs};"
+	"name=loader,start=32K,size=4064K,uuid=${uuid_gpt_loader};" \
+	"name=reserved,size=4M,uuid=${uuid_gpt_reserved};" \
+	"name=boot,size=128M,bootable,uuid=${uuid_gpt_boot};" \
+	"name=rootfs,size=-,uuid=${uuid_gpt_rootfs};\0" \
 
 
 #define CONFIG_SYS_NO_FLASH
