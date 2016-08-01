@@ -1,0 +1,56 @@
+From 856324500fc2ae80c8a6eb44dd9582d5a6251b51 Mon Sep 17 00:00:00 2001
+From: Jacob Chen <jacob2.chen@rock-chips.com>
+Date: Mon, 1 Aug 2016 17:34:00 +0800
+Subject: [PATCH 1/2] rockchip: rk3288: add usb mass storage support
+
+Change-Id: I4235bf459b82ddadb12a7afd1a07d996e1e6268c
+Signed-off-by: Ziyuan Xu <xzy.xu@rock-chips.com>
+---include/configs/rk3288_common.h | 6 ++++++1 file changed, 6 insertions(+)
+---
+ include/configs/rk3288_common.h | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/include/configs/rk3288_common.h b/include/configs/rk3288_common.h
+index 814116c..4b3cc4b 100644
+--- a/include/configs/rk3288_common.h
++++ b/include/configs/rk3288_common.h
+@@ -96,6 +96,10 @@
+ #define CONFIG_FASTBOOT_BUF_ADDR	CONFIG_SYS_LOAD_ADDR
+ #define CONFIG_FASTBOOT_BUF_SIZE	0x08000000
+ 
++/* usb mass storage */
++#define CONFIG_CMD_USB_MASS_STORAGE
++ #define CONFIG_USB_FUNCTION_MASS_STORAGE
++
+ #define CONFIG_USB_GADGET_DOWNLOAD
+ #define CONFIG_G_DNL_MANUFACTURER	"Rockchip"
+ #define CONFIG_G_DNL_VENDOR_NUM		0x2207
+@@ -120,6 +124,17 @@
+ 
+ #include <config_distro_bootcmd.h>
+ 
++#define CONFIG_RANDOM_UUID
++#define PARTS_DEFAULT \
++	"uuid_disk=${uuid_gpt_disk};" \
++	"name=loader1,start=32K,size=4064K,uuid=${uuid_gpt_loader1};" \
++	"name=reserved1,size=64K,uuid=${uuid_gpt_reserved1};" \
++	"name=reserved2,size=4M,uuid=${uuid_gpt_reserved2};" \
++	"name=loader2,size=4MB,uuid=${uuid_gpt_loader2};" \
++	"name=atf,size=128M,bootable,uuid=${uuid_gpt_atf};" \
++	"name=boot,size=128M,bootable,uuid=${uuid_gpt_boot};" \
++	"name=rootfs,size=-,uuid=${uuid_gpt_rootfs};\0" \
++
+ /* Linux fails to load the fdt if it's loaded above 512M on a Rock 2 board, so
+  * limit the fdt reallocation to that */
+ #define CONFIG_EXTRA_ENV_SETTINGS \
+@@ -127,6 +142,7 @@
+ 	"initrd_high=0x1fffffff\0" \
+ 	ENV_MEM_LAYOUT_SETTINGS \
+ 	ROCKCHIP_DEVICE_SETTINGS \
++	"partitions=" PARTS_DEFAULT \
+ 	BOOTENV
+ #endif
+ 
+-- 
+1.9.1
+
