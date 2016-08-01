@@ -36,7 +36,7 @@ index 814116c..4b3cc4b 100644
 +	"name=reserved1,size=64K,uuid=${uuid_gpt_reserved1};" \
 +	"name=reserved2,size=4M,uuid=${uuid_gpt_reserved2};" \
 +	"name=loader2,size=4MB,uuid=${uuid_gpt_loader2};" \
-+	"name=atf,size=128M,bootable,uuid=${uuid_gpt_atf};" \
++	"name=atf,size=128M,uuid=${uuid_gpt_atf};" \
 +	"name=boot,size=128M,bootable,uuid=${uuid_gpt_boot};" \
 +	"name=rootfs,size=-,uuid=${uuid_gpt_rootfs};\0" \
 +
