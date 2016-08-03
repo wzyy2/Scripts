@@ -1,0 +1,312 @@
+From f2660d995b97b3f5309ffcef63bca38d5b826f25 Mon Sep 17 00:00:00 2001
+From: Tom Rini <trini@konsulko.com>
+Date: Mon, 1 Aug 2016 18:54:53 -0400
+Subject: [PATCH] ARM: Rework and correct barrier definitions
+
+As part of testing booting Linux kernels on Rockchip devices, it was
+discovered by Ziyuan Xu and Sandy Patterson that we had multiple and for
+some cases incomplete isb definitions.  This was causing a failure to
+boot of the Linux kernel.
+
+In order to solve this problem as well as cover any corner cases that we
+may also have had a number of changes are made in order to consolidate
+things.  First, <asm/barriers.h> now becomes the source of isb/dsb/dmb
+definitions.  This however introduces another complexity.  Due to
+needing to build SPL for 32bit tegra with -march=armv4 we need to borrow
+the __LINUX_ARM_ARCH__ logic from the Linux Kernel in a more complete
+form.  Move this from arch/arm/lib/Makefile to arch/arm/Makefile and add
+a comment about it.  Now that we can always know what the target CPU is
+capable off we can get always do the correct thing for the barrier.  The
+final part of this is that need to be consistent everywhere and call
+isb()/dsb()/dmb() and NOT call ISB/DSB/DMB in some cases and the
+function names in others.
+
+Reported-by: Ziyuan Xu <xzy.xu@rock-chips.com>
+Reported-by: Sandy Patterson <apatterson@sightlogix.com>
+Signed-off-by: Tom Rini <trini@konsulko.com>
+---
+ arch/arm/Makefile                          |  8 ++++++++
+ arch/arm/cpu/armv7/cache_v7.c              | 10 +++++-----
+ arch/arm/cpu/armv7/psci-common.c           |  2 +-
+ arch/arm/cpu/armv7/sunxi/psci.c            | 12 ++++++------
+ arch/arm/include/asm/barriers.h            | 11 +++++++++--
+ arch/arm/include/asm/io.h                  |  4 ++--
+ arch/arm/include/asm/system.h              |  8 +-------
+ arch/arm/lib/Makefile                      |  5 -----
+ arch/arm/mach-exynos/include/mach/system.h | 10 ----------
+ arch/arm/mach-sunxi/dram_helpers.c         |  2 +-
+ arch/arm/mach-tegra/tegra20/Makefile       |  3 ++-
+ 11 files changed, 35 insertions(+), 40 deletions(-)
+
+diff --git a/arch/arm/Makefile b/arch/arm/Makefile
+index 6a07cd1..82f2fd0 100644
+--- a/arch/arm/Makefile
++++ b/arch/arm/Makefile
+@@ -20,6 +20,14 @@ arch-$(CONFIG_CPU_V7)		=$(call cc-option, -march=armv7-a, \
+ 				 $(call cc-option, -march=armv7, -march=armv5))
+ arch-$(CONFIG_ARM64)		=-march=armv8-a
+ 
++# On Tegra systems we must build SPL for the armv4 core on the device
++# but otherwise we can use the value in CONFIG_SYS_ARM_ARCH
++ifeq ($(CONFIG_SPL_BUILD)$(CONFIG_TEGRA),yy)
++arch-y += -D__LINUX_ARM_ARCH__=4
++else
++arch-y += -D__LINUX_ARM_ARCH__=$(CONFIG_SYS_ARM_ARCH)
++endif
++
+ # Evaluate arch cc-option calls now
+ arch-y := $(arch-y)
+ 
+diff --git a/arch/arm/cpu/armv7/cache_v7.c b/arch/arm/cpu/armv7/cache_v7.c
+index 52f1856..c4bbcc3 100644
+--- a/arch/arm/cpu/armv7/cache_v7.c
++++ b/arch/arm/cpu/armv7/cache_v7.c
+@@ -75,7 +75,7 @@ static void v7_dcache_maint_range(u32 start, u32 stop, u32 range_op)
+ 	}
+ 
+ 	/* DSB to make sure the operation is complete */
+-	DSB;
++	dsb();
+ }
+ 
+ /* Invalidate TLB */
+@@ -88,9 +88,9 @@ static void v7_inval_tlb(void)
+ 	/* Invalidate entire instruction TLB */
+ 	asm volatile ("mcr p15, 0, %0, c8, c5, 0" : : "r" (0));
+ 	/* Full system DSB - make sure that the invalidation is complete */
+-	DSB;
++	dsb();
+ 	/* Full system ISB - make sure the instruction stream sees it */
+-	ISB;
++	isb();
+ }
+ 
+ void invalidate_dcache_all(void)
+@@ -194,10 +194,10 @@ void invalidate_icache_all(void)
+ 	asm volatile ("mcr p15, 0, %0, c7, c5, 6" : : "r" (0));
+ 
+ 	/* Full system DSB - make sure that the invalidation is complete */
+-	DSB;
++	dsb();
+ 
+ 	/* ISB - make sure the instruction stream sees it */
+-	ISB;
++	isb();
+ }
+ #else
+ void invalidate_icache_all(void)
+diff --git a/arch/arm/cpu/armv7/psci-common.c b/arch/arm/cpu/armv7/psci-common.c
+index d14b693..8cb4107 100644
+--- a/arch/arm/cpu/armv7/psci-common.c
++++ b/arch/arm/cpu/armv7/psci-common.c
+@@ -29,7 +29,7 @@ static u32 psci_target_pc[CONFIG_ARMV7_PSCI_NR_CPUS] __secure_data = { 0 };
+ void __secure psci_save_target_pc(int cpu, u32 pc)
+ {
+ 	psci_target_pc[cpu] = pc;
+-	DSB;
++	dsb();
+ }
+ 
+ u32 __secure psci_get_target_pc(int cpu)
+diff --git a/arch/arm/cpu/armv7/sunxi/psci.c b/arch/arm/cpu/armv7/sunxi/psci.c
+index 7ac8406..766b8c7 100644
+--- a/arch/arm/cpu/armv7/sunxi/psci.c
++++ b/arch/arm/cpu/armv7/sunxi/psci.c
+@@ -53,16 +53,16 @@ static void __secure __mdelay(u32 ms)
+ 	u32 reg = ONE_MS * ms;
+ 
+ 	cp15_write_cntp_tval(reg);
+-	ISB;
++	isb();
+ 	cp15_write_cntp_ctl(3);
+ 
+ 	do {
+-		ISB;
++		isb();
+ 		reg = cp15_read_cntp_ctl();
+ 	} while (!(reg & BIT(2)));
+ 
+ 	cp15_write_cntp_ctl(0);
+-	ISB;
++	isb();
+ }
+ 
+ static void __secure clamp_release(u32 __maybe_unused *clamp)
+@@ -164,7 +164,7 @@ static u32 __secure cp15_read_scr(void)
+ static void __secure cp15_write_scr(u32 scr)
+ {
+ 	asm volatile ("mcr p15, 0, %0, c1, c1, 0" : : "r" (scr));
+-	ISB;
++	isb();
+ }
+ 
+ /*
+@@ -190,7 +190,7 @@ void __secure __irq psci_fiq_enter(void)
+ 
+ 	/* End of interrupt */
+ 	writel(reg, GICC_BASE + GICC_EOIR);
+-	DSB;
++	dsb();
+ 
+ 	/* Get CPU number */
+ 	cpu = (reg >> 10) & 0x7;
+@@ -242,7 +242,7 @@ void __secure psci_cpu_off(void)
+ 
+ 	/* Ask CPU0 via SGI15 to pull the rug... */
+ 	writel(BIT(16) | 15, GICD_BASE + GICD_SGIR);
+-	DSB;
++	dsb();
+ 
+ 	/* Wait to be turned off */
+ 	while (1)
+diff --git a/arch/arm/include/asm/barriers.h b/arch/arm/include/asm/barriers.h
+index 37870f9..04784b7 100644
+--- a/arch/arm/include/asm/barriers.h
++++ b/arch/arm/include/asm/barriers.h
+@@ -30,15 +30,22 @@
+ 
+ #endif /* !CONFIG_ARM64 */
+ 
+-#if defined(__ARM_ARCH_7A__) || defined(CONFIG_ARM64)
++#if __LINUX_ARM_ARCH__ >= 7
+ #define ISB	asm volatile ("isb sy" : : : "memory")
+ #define DSB	asm volatile ("dsb sy" : : : "memory")
+ #define DMB	asm volatile ("dmb sy" : : : "memory")
+-#else
++#elif __LINUX_ARM_ARCH__ == 6
+ #define ISB	CP15ISB
+ #define DSB	CP15DSB
+ #define DMB	CP15DMB
++#else
++#define ISB	asm volatile ("" : : : "memory")
++#define DSB	CP15DSB
++#define DMB	asm volatile ("" : : : "memory")
+ #endif
+ 
++#define isb()	ISB
++#define dsb()	DSB
++#define dmb()	DMB
+ #endif	/* __ASSEMBLY__ */
+ #endif	/* __BARRIERS_H__ */
+diff --git a/arch/arm/include/asm/io.h b/arch/arm/include/asm/io.h
+index 6121f1d..5834f5b 100644
+--- a/arch/arm/include/asm/io.h
++++ b/arch/arm/include/asm/io.h
+@@ -25,6 +25,7 @@
+ #include <linux/types.h>
+ #include <asm/byteorder.h>
+ #include <asm/memory.h>
++#include <asm/barriers.h>
+ #if 0	/* XXX###XXX */
+ #include <asm/arch/hardware.h>
+ #endif	/* XXX###XXX */
+@@ -136,8 +137,7 @@ static inline void __raw_readsl(unsigned long addr, void *data, int longlen)
+  * TODO: The kernel offers some more advanced versions of barriers, it might
+  * have some advantages to use them instead of the simple one here.
+  */
+-#define mb()		asm volatile("dsb sy" : : : "memory")
+-#define dmb()		__asm__ __volatile__ ("" : : : "memory")
++#define mb()		dsb()
+ #define __iormb()	dmb()
+ #define __iowmb()	dmb()
+ 
+diff --git a/arch/arm/include/asm/system.h b/arch/arm/include/asm/system.h
+index 2bdc0be..7b7b867 100644
+--- a/arch/arm/include/asm/system.h
++++ b/arch/arm/include/asm/system.h
+@@ -3,6 +3,7 @@
+ 
+ #include <common.h>
+ #include <linux/compiler.h>
++#include <asm/barriers.h>
+ 
+ #ifdef CONFIG_ARM64
+ 
+@@ -34,11 +35,6 @@ enum dcache_option {
+ 	DCACHE_WRITEALLOC = 4 << 2,
+ };
+ 
+-#define isb()				\
+-	({asm volatile(			\
+-	"isb" : : : "memory");		\
+-	})
+-
+ #define wfi()				\
+ 	({asm volatile(			\
+ 	"wfi" : : : "memory");		\
+@@ -227,8 +223,6 @@ void __noreturn psci_system_reset(bool smc);
+  */
+ void save_boot_params_ret(void);
+ 
+-#define isb() __asm__ __volatile__ ("" : : : "memory")
+-
+ #define nop() __asm__ __volatile__("mov\tr0,r0\t@ nop\n\t");
+ 
+ #ifdef __ARM_ARCH_7A__
+diff --git a/arch/arm/lib/Makefile b/arch/arm/lib/Makefile
+index 9f71376..a8d1557 100644
+--- a/arch/arm/lib/Makefile
++++ b/arch/arm/lib/Makefile
+@@ -67,11 +67,6 @@ extra-y	+= eabi_compat.o
+ endif
+ 
+ asflags-y += -DCONFIG_ARM_ASM_UNIFIED
+-ifeq ($(CONFIG_SPL_BUILD)$(CONFIG_TEGRA),yy)
+-asflags-y += -D__LINUX_ARM_ARCH__=4
+-else
+-asflags-y += -D__LINUX_ARM_ARCH__=$(CONFIG_SYS_ARM_ARCH)
+-endif
+ 
+ # some files can only build in ARM or THUMB2, not THUMB1
+ 
+diff --git a/arch/arm/mach-exynos/include/mach/system.h b/arch/arm/mach-exynos/include/mach/system.h
+index 3ffb296..2c94a6b 100644
+--- a/arch/arm/mach-exynos/include/mach/system.h
++++ b/arch/arm/mach-exynos/include/mach/system.h
+@@ -38,16 +38,6 @@ struct exynos5_sysreg {
+ #define USB20_PHY_CFG_HOST_LINK_EN	(1 << 0)
+ 
+ /*
+- * Data Synchronization Barrier acts as a special kind of memory barrier.
+- * No instruction in program order after this instruction executes until
+- * this instruction completes. This instruction completes when:
+- * - All explicit memory accesses before this instruction complete.
+- * - All Cache, Branch predictor and TLB maintenance operations before
+- *   this instruction complete.
+- */
+-#define dsb() __asm__ __volatile__ ("dsb\n\t" : : );
+-
+-/*
+  * This instruction causes an event to be signaled to all cores
+  * within a multiprocessor system. If SEV is implemented,
+  * WFE must also be implemented.
+diff --git a/arch/arm/mach-sunxi/dram_helpers.c b/arch/arm/mach-sunxi/dram_helpers.c
+index 20b430f..95143d1 100644
+--- a/arch/arm/mach-sunxi/dram_helpers.c
++++ b/arch/arm/mach-sunxi/dram_helpers.c
+@@ -32,7 +32,7 @@ bool mctl_mem_matches(u32 offset)
+ 	/* Try to write different values to RAM at two addresses */
+ 	writel(0, CONFIG_SYS_SDRAM_BASE);
+ 	writel(0xaa55aa55, (ulong)CONFIG_SYS_SDRAM_BASE + offset);
+-	DSB;
++	dsb();
+ 	/* Check if the same value is actually observed when reading back */
+ 	return readl(CONFIG_SYS_SDRAM_BASE) ==
+ 	       readl((ulong)CONFIG_SYS_SDRAM_BASE + offset);
+diff --git a/arch/arm/mach-tegra/tegra20/Makefile b/arch/arm/mach-tegra/tegra20/Makefile
+index 17c1990..72d82a5 100644
+--- a/arch/arm/mach-tegra/tegra20/Makefile
++++ b/arch/arm/mach-tegra/tegra20/Makefile
+@@ -10,7 +10,8 @@ endif
+ 
+ # The AVP is ARMv4T architecture so we must use special compiler
+ # flags for any startup files it might use.
+-CFLAGS_warmboot_avp.o += -march=armv4t
++CFLAGS_warmboot_avp.o = -march=armv4t -U__LINUX_ARM_ARCH__ \
++	-D__LINUX_ARM_ARCH__=4
+ 
+ obj-y	+= clock.o funcmux.o pinmux.o
+ obj-$(CONFIG_TEGRA_LP0) += warmboot.o crypto.o warmboot_avp.o
+-- 
+2.9.2
+
