@@ -28,6 +28,12 @@ KERNELIMAGE=kernel.img
 [ ! -d ${IMAGE} ] && mkdir ${IMAGE}
 
 case ${BOARD} in
+    "rk3399")
+        DEFCONFIG=rockchip_linux_defconfig
+        DTB=rk3399-sapphire-excavator-linux.dtb
+	export ARCH=arm64
+	export CROSS_COMPILE=aarch64-linux-gnu-
+        ;;
     "rk3288-evb")
         DEFCONFIG=rockchip_linux_defconfig
         DTB=rk3288-evb-act8846.dtb
@@ -59,16 +65,23 @@ echo Using ${DEFCONFIG}
 
 cd ${LOCALPATH}
 make ${DEFCONFIG}
-make  -j8
-scripts/mkkrnlimg arch/arm/boot/zImage kernel.img>/dev/null
-echo '  Image:  kernel.img is ready'
-scripts/resource_tool arch/arm/boot/dts/${DTB}
-echo " Image:  resource.img (with '${DTB}' is ready"
+make -j8
 
-cat arch/arm/boot/zImage arch/arm/boot/dts/${DTB} > kernel2.img.zimage
-mkimage -A arm -O linux -T kernel -C none -a 0x60800800 -d kernel2.img.zimage kernel2.img
-rm kernel2.img.zimage
-echo '  Image:  kernel2.img (with ${DTB} is ready'
 
-cp arch/arm/boot/zImage ./
-cp arch/arm/boot/dts/${DTB} ./
+if [ $ARCH == "arm" ] ; then
+	scripts/mkkrnlimg arch/arm/boot/zImage kernel.img>/dev/null
+	echo '  Image:  kernel.img is ready'
+	scripts/resource_tool arch/arm/boot/dts/${DTB}
+	echo " Image:  resource.img (with '${DTB}' is ready"
+
+	cat arch/arm/boot/zImage arch/arm/boot/dts/${DTB} > kernel2.img.zimage
+	mkimage -A arm -O linux -T kernel -C none -a 0x60800800 -d kernel2.img.zimage kernel2.img
+	rm kernel2.img.zimage
+	echo '  Image:  kernel2.img (with ${DTB} is ready'
+	cp arch/arm/boot/zImage ./
+	cp arch/arm/boot/dts/${DTB} ./
+else
+	cp arch/arm64/boot/Image ./
+	cp arch/arm64/boot/dts/rockchip/${DTB} ./
+fi
+
