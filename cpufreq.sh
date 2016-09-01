@@ -23,6 +23,6 @@ EOF
 chmod +x /sbin/cpufreq.sh
 
 
-cd /sys/devices/ff610000.dmc/devfreq/ff610000.dmc
+cd /sys/devices/platform/ff610000.dmc/devfreq/ff610000.dmc
 echo userspace > governor
 echo 200000000 > userspace/set_freq
