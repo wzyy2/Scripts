@@ -1,4 +1,3 @@
-
 #!/bin/bash    
 
 function rand(){
@@ -8,7 +7,7 @@ function rand(){
     echo $(($num%$max+$min))    
 }  
 
-rnd=$(rand 1 50)    
+rnd=$(rand 10 50)    
 echo $rnd"s" 
 
 dmesg | grep "Modules linked in" 
@@ -21,16 +20,5 @@ echo "didn't find1"
 fi
 
 sleep $rnd"s" 
-
-dmesg | grep "flush_to_ldisc" 
-if [ $? -eq 0 ]       
-then  
-echo "find bug2"
-dmesg > /root/bug$(date +%y%m%d)
-else
-echo "didn't find2"
-fi
-
-sleep $rnd"s"
 
 reboot
