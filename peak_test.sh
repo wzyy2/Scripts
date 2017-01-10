@@ -28,7 +28,7 @@ do
 	rnd=$(rand 100 600) ;
 
 	# cpu stress
-	stress  --cpu 6  --io 4  --vm 2  --vm-bytes 128M --timeout 1000 &
+	md5sum /dev/zero &
 
 	# gpu and cpu stress
 	su linaro -c "DISPLAY=:0.0 glmark2-es2 --benchmark refract --run-forever --off-screen" &
@@ -37,7 +37,7 @@ do
 	# Sleep and  the stress tool will run in backend
 	sleep $rnd;
 
-	killall stress;
+	killall md5sum;
 	killall glmark2-es2 ;
 
 	# Let temperature down, because we want gpu + cpu both run in max freq 
