@@ -1,0 +1,5 @@
+ffprobe -select_streams v -show_entries packet=size:stream=duration -of compact=p=0:nk=1 video.mp4
+
+ffprobe -v error -show_format -show_streams
+
+gnome player
