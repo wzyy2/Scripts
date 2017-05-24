@@ -19,3 +19,6 @@ gst-launch-1.0 -v filesrc location=lotus_3288.yuv ! \
     videoparse width=500 height=179 framerate=25/1 format=GST_VIDEO_FORMAT_NV12 ! \
      imagefreeze ! videoconvert ! \
     ximagesink
+
+
+mediainfo 2.jpg
