@@ -15,3 +15,7 @@ gst-launch-1.0  filesrc location=/media/chen/3A32192873ECFA46/tears-of-steel_4k.
  identify -verbose file.jpg | grep Interlace
  
  
+gst-launch-1.0 -v filesrc location=lotus_3288.yuv ! \
+    videoparse width=500 height=179 framerate=25/1 format=GST_VIDEO_FORMAT_NV12 ! \
+     imagefreeze ! videoconvert ! \
+    ximagesink
