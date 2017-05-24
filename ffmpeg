@@ -11,7 +11,7 @@ ffmpeg -i tears-of-steel_4k.mov -vcodec copy -bsf:v h264_mp4toannexb -an 2.h264
 gst-launch-1.0  filesrc location=/media/chen/3A32192873ECFA46/tears-of-steel_4k.zip/2.h264 ! video/x-h264 ! h264parse \
 ! vaapidecode ! vaapisink
 
-./mpi_dec_test -i lotus.jpg -w 640 -h 480 -t 8 -o lotus_3288.yuv
+./mpi_dec_test -i 1.jpg -w 500 -h 431 -t 8 -o lotus_3288.yuv
  identify -verbose file.jpg | grep Interlace
  
  
