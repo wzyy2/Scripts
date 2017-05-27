@@ -33,4 +33,4 @@ ue text-overlay=false --gst-debug=fpsdisplaysink:6
 
 gst-launch-1.0  filesrc location=2.mjpeg  ! multipartdemux !  jpegdec !  videoconvert ! vaapisink
 
-gst-launch-1.0 -v videotestsrc  ! "video/x-raw,width=1920,height=1080"  ! queue ! jpegenc ! queue ! jpegparse ! decodebin ! kmssink 
+gst-launch-1.0 -v videotestsrc  ! "video/x-raw,width=1920,height=1080"  ! queue ! jpegenc ! queue ! jpegparse ! queue ! mppvideodec ! kmssink 
