@@ -1,0 +1,32 @@
+From d974f8baa799bc7bcf9cc063c41ed95e92492090 Mon Sep 17 00:00:00 2001
+From: Jacob Chen <jacob2.chen@rock-chips.com>
+Date: Tue, 6 Jun 2017 15:27:47 +0800
+Subject: [PATCH 1/2] drm/rockchip: vop: add color key reg for rk3288
+
+VOP support transparency color key,
+the pxiel whose value is equal to the color key could not be visible on the screen.
+
+It's helpfull to linux project develop, let's add it.
+
+Change-Id: I168e4ccf261489a0514ec4aeb77491370c6377ed
+Signed-off-by: Jacob Chen <jacob2.chen@rock-chips.com>
+---
+ drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
+index 50b8bf2..9ba5b9a 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
++++ b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
+@@ -121,6 +121,8 @@ static const struct vop_win_phy rk3288_win01_data = {
+ 	.src_alpha_ctl = VOP_REG(RK3288_WIN0_SRC_ALPHA_CTRL, 0xffffffff, 0),
+ 	.dst_alpha_ctl = VOP_REG(RK3288_WIN0_DST_ALPHA_CTRL, 0xffffffff, 0),
+ 	.channel = VOP_REG_VER(RK3288_WIN0_CTRL2, 0xff, 0, 3, 8, 8),
++	.key_color = VOP_REG(RK3288_WIN0_COLOR_KEY, 0x3fffffff, 0),
++	.key_en = VOP_REG(RK3288_WIN0_COLOR_KEY, 0x1, 31),
+ };
+ 
+ static const struct vop_win_phy rk3288_win23_data = {
+-- 
+1.9.1
+
