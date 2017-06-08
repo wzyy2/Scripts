@@ -1,6 +1,12 @@
 set print pretty on
 set pagination off
 
+gdb -p $(pidof Xorg)
+(inside gdb)
+set logging overwrite on
+set logging on
+break xorg_backtrace 
+
 p xxx:xx
 
 print *RecPtr
@@ -23,5 +29,13 @@ commands
   p DRI2SwapComplete::client->clientPtr
   continue
 end
+
+break PickKeyboard
+commands
+  p PickKeyboard::client->clientPtr
+  continue
+end
+
+
 
 info b
