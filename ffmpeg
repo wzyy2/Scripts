@@ -5,6 +5,7 @@ ffprobe -v error -show_format -show_streams
 gnome player
 gst-launch-1.0  filesrc location=/1.mkv ! matroskademux  ! queue !  h264parse ! mppvideodec ! kmssink
 
+gst-launch-1.0 uridecodebin uri=file:///1.mkv  ! waylandsink
 
 ffmpeg -i tears-of-steel_4k.mov -vcodec copy -bsf:v h264_mp4toannexb -an 2.h264 
 
