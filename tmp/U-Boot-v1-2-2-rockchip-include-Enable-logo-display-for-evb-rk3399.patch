@@ -1,0 +1,39 @@
+From patchwork Tue Apr 18 08:21:54 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [U-Boot, v1,
+ 2/2] rockchip: include: Enable logo display for evb-rk3399
+From: eric.gao@rock-chips.com
+X-Patchwork-Id: 751724
+X-Patchwork-Delegate: sjg@chromium.org
+Message-Id: <1492503714-30663-3-git-send-email-eric.gao@rock-chips.com>
+To: u-boot@lists.denx.de
+Cc: eric.gao@rock-chips.com
+Date: Tue, 18 Apr 2017 16:21:54 +0800
+
+Signed-off-by: Eric Gao <eric.gao@rock-chips.com>
+---
+
+Changes in v1:
+-Enable logo display for evb-rk3399
+
+ include/configs/evb_rk3399.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/include/configs/evb_rk3399.h b/include/configs/evb_rk3399.h
+index 8fdefa2..af44e45 100644
+--- a/include/configs/evb_rk3399.h
++++ b/include/configs/evb_rk3399.h
+@@ -22,4 +22,11 @@
+ 
+ #define CONFIG_SYS_WHITE_ON_BLACK
+ 
++/* Enable Misc to show logo */
++#define CONFIG_BOARD_COMMON
++#define CONFIG_MISC_COMMON
++#define CONFIG_MISC_INIT_R
++#define CONFIG_CMD_BMP
++#define CONFIG_BMP_24BPP
++
+ #endif
