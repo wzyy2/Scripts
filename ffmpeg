@@ -8,6 +8,7 @@ gst-launch-1.0  filesrc location=/1.mkv ! matroskademux  ! queue !  h264parse ! 
 gst-launch-1.0 uridecodebin uri=file:///1.mkv  ! waylandsink
 
 ffmpeg -i tears-of-steel_4k.mov -vcodec copy -bsf:v h264_mp4toannexb -an 2.h264 
+ffmpeg -i paonan1.mp4 -c:v copy -bsf hevc_mp4toannexb paonan1.hevc
 
 gst-launch-1.0  filesrc location=/media/chen/3A32192873ECFA46/tears-of-steel_4k.zip/2.h264 ! video/x-h264 ! h264parse \
 ! vaapidecode ! vaapisink
