@@ -26,21 +26,28 @@ gst-launch-1.0 -v filesrc location=lotus_3288.yuv ! \
 mediainfo 2.jpg
 convert image.jpg -profile sRGB.icc rgb_image.jpg
 
-
+//kms
 gst-launch-1.0  filesrc location=2.mjpeg ! \
 image/jpeg,width=1920,height=1080,framerate=30/1 ! decodebin !  videoconvert ! vaapisink
 
  fpsdisplaysink video-sink=kmssink signal-fps-measurements=true text-overlay=false --gst-debug=fpsdisplaysink:6
 
+//jpeg
 gst-launch-1.0  filesrc location=2.mjpeg  ! multipartdemux !  jpegdec !  videoconvert ! vaapisink
 
 gst-launch-1.0 -v videotestsrc  ! "video/x-raw,width=1920,height=1080"  ! queue ! jpegenc ! queue ! jpegparse ! queue ! mppvideodec ! kmssink 
+
+// rga
 
 gst-launch-1.0 -v videotestsrc  ! "video/x-raw,format=NV12, width=1080,height=720,framerate=30/1"  ! v4l2video0convert ! fpsdisplaysink video-sink=kmssink signal-fps-measurements=true text-overlay=false --gst-debug=fpsdisplaysink:6
 
 gst-launch-1.0 -v videotestsrc  ! "video/x-raw,format=BGRA, width=1920,height=1080,framerate=30/1"  ! \
 v4l2video0convert output-io-mode=dmabuf capture-io-mode=dmabuf ! \
 "video/x-raw,format=NV12, width=640,height=720,framerate=30/1, pixel-aspect-ratio=8/9"  ! kmssink --gst-debug=*:2
+
+gst-launch-1.0  filesrc location=/usr/local/test.mp4 ! qtdemux ! queue ! h264parse ! mppvideodec  ! queue ! \
+v4l2video0convert output-io-mode=dmabuf capture-io-mode=dmabuf ! \
+"video/x-raw,format=NV12, width=640,height=720,pixel-aspect-ratio=8/9"  ! kmssink --gst-debug=*:2
 
 
 export DISPLAY=:0.0
