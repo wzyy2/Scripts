@@ -50,6 +50,11 @@ v4l2video0convert output-io-mode=dmabuf capture-io-mode=dmabuf ! \
 "video/x-raw,format=NV12, width=640,height=720,pixel-aspect-ratio=8/9"  ! kmssink --gst-debug=*:2
 
 
+// system
+
+rm -rf ~/.cache/gstreamer-1.0/registry.arm.bin  && rm -rf /home/linaro/.cache/gstreamer-1.0/registry.arm.bin
+
+
 export DISPLAY=:0.0
 export GST_DEBUG=*:5
 export QT_QPA_PLATFORM=wayland-egl
