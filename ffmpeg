@@ -51,7 +51,9 @@ v4l2video0convert output-io-mode=dmabuf capture-io-mode=dmabuf ! \
 
 //camera
 DISPLAY=:0.0 su linaro -c "gst-launch-1.0 v4l2src device=/dev/video0 ! \
-video/x-raw,format=YV12,width=320,height=240,framerate=30/1 ! queue ! videoconvert ! queue ! glimagesink"
+video/x-raw,format=RGB,width=1920,height=1080,framerate=60/1 ! queue ! videoconvert ! queue ! glimagesink"
+
+DISPLAY=:0.0 su linaro -c "gst-launch-1.0 -v -m camerabin mode=1 viewfinder-sink=autovideosink"
 
 // system
 
