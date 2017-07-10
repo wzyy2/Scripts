@@ -49,6 +49,9 @@ gst-launch-1.0  filesrc location=/usr/local/test.mp4 ! qtdemux ! queue ! h264par
 v4l2video0convert output-io-mode=dmabuf capture-io-mode=dmabuf ! \
 "video/x-raw,format=NV12, width=640,height=720,pixel-aspect-ratio=8/9"  ! kmssink --gst-debug=*:2
 
+//camera
+DISPLAY=:0.0 su linaro -c "gst-launch-1.0 v4l2src device=/dev/video0 ! \
+video/x-raw,format=YV12,width=960,height=544,framerate=30/1 ! queue ! videoconvert ! queue ! xvimagesink"
 
 // system
 
