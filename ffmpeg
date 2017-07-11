@@ -50,8 +50,13 @@ v4l2video0convert output-io-mode=dmabuf capture-io-mode=dmabuf ! \
 "video/x-raw,format=NV12, width=640,height=720,pixel-aspect-ratio=8/9"  ! kmssink --gst-debug=*:2
 
 //camera
-DISPLAY=:0.0 su linaro -c "gst-launch-1.0 v4l2src device=/dev/video0 ! \
-video/x-raw,format=RGB,width=1920,height=1080,framerate=60/1 ! queue ! videoconvert ! queue ! glimagesink"
+DISPLAY=:0.0 su linaro -c "gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! \
+video/x-raw,format=RGB16,width=640,height=480  ! glimagesink"
+
+export XDG_RUNTIME_DIR=/run/user/0
+export WAYLAND_DISPLAY=wayland-0
+gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! video/x-raw,format=RGB16,width=640,height=480  ! waylandsink
+
 
 DISPLAY=:0.0 su linaro -c "gst-launch-1.0 -v -m camerabin mode=1 viewfinder-sink=autovideosink"
 
