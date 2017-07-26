@@ -6,7 +6,7 @@ make ARCH=arm64 savedefconfig && mv defconfig arch/arm64/configs/rockchip_linux_
 /workbench/debian-sdk/kernel/scripts/Lindent  *.c
 
 
-astyle *.c  --style=knf --indent=tab
+astyle *.c  --style=knf --indent=force-tab=8
 
 ./scripts/checkpatch.pl -f outging/*
 ./scripts/get_maintainer.pl arch/arm/mach-rockchip -f
