@@ -1,0 +1,12 @@
+export TOASTER_DIR=/home/rk/poky
+./bitbake/lib/toaster/manage.py makemigrations
+./bitbake/lib/toaster/manage.py migrate
+./bitbake/lib/toaster/manage.py syncdb
+
+
+bitbake/lib/toaster/manage.py syncdb
+
+cd /home/rk/poky
+source oe-init-build-env
+source toaster start webport=0.0.0.0:8000
+
