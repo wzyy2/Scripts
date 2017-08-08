@@ -1,0 +1,15 @@
+diff --git a/arch/arm/mach-rockchip/pm.c b/arch/arm/mach-rockchip/pm.c
+index 553af3d..b9202d8 100755
+--- a/arch/arm/mach-rockchip/pm.c
++++ b/arch/arm/mach-rockchip/pm.c
+@@ -149,8 +149,8 @@ static void rk3288_slp_mode_set(int level)
+ 		     (u32)params->resume_loc);
+ 
+ 	mode_set = BIT(PMU_GLOBAL_INT_DISABLE) | BIT(PMU_L2FLUSH_EN) |
+-		   BIT(PMU_SREF0_ENTER_EN) | BIT(PMU_SREF1_ENTER_EN) |
+-		   BIT(PMU_DDR0_GATING_EN) | BIT(PMU_DDR1_GATING_EN) |
++		   BIT(PMU_SREF0_ENTER_EN) | //BIT(PMU_SREF1_ENTER_EN) |
++		   BIT(PMU_DDR0_GATING_EN) | //BIT(PMU_DDR1_GATING_EN) |
+ 		   BIT(PMU_PWR_MODE_EN) | BIT(PMU_CHIP_PD_EN) |
+ 		   BIT(PMU_SCU_EN);
+ 
