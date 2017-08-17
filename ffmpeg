@@ -2,6 +2,8 @@ ffprobe -select_streams v -show_entries packet=size:stream=duration -of compact=
 
 ffprobe -v error -show_format -show_streams
 
+RGBx
+
 gnome player
 gst-launch-1.0  filesrc location=/1.mkv ! matroskademux  ! queue !  h264parse ! mppvideodec ! kmssink
 
