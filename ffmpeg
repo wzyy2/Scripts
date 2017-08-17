@@ -57,6 +57,11 @@ export XDG_RUNTIME_DIR=/run/user/0
 export WAYLAND_DISPLAY=wayland-0
 gst-launch-1.0 v4l2src device=/dev/video0 ! videoconvert ! video/x-raw,format=RGB16,width=640,height=480  ! waylandsink
 
+ gst-launch-1.0 v4l2src device=/dev/video0 io-mode=4 ! videoconvert ! \
+  video/x-raw,format=YUVY,width=640,height=480 ! videoconvert ! \
+  video/x-raw,format=NV12,width=640,height=480! kmssink
+
+
 
 DISPLAY=:0.0 su linaro -c "gst-launch-1.0 -v -m camerabin mode=1 viewfinder-sink=autovideosink"
 
