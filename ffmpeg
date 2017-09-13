@@ -86,3 +86,5 @@ export QT_QPA_PLATFORM=wayland-egl
 export XDG_RUNTIME_DIR=/run/user/0
 export WAYLAND_DISPLAY=wayland-0
 
+
+ gst-launch-1.0 filesrc location=/home/user/Videos/out.yuv ! videoparse width=1920 height=816 framerate=24/1 format=2 ! autovideoconvert ! autovideosink
