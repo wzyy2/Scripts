@@ -1,0 +1,74 @@
+From d81d8eb8caee635fa978b909e1dc14616b05b9d9 Mon Sep 17 00:00:00 2001
+From: Jacob Chen <jacob-chen@iotwrt.com>
+Date: Fri, 22 Sep 2017 13:28:28 +0800
+Subject: [PATCH] rga: workaround for ver_stride from VPU
+
+We can't set ver_stride by V4L2 API..
+
+Change-Id: If977f668594c6aa83d795c7de7775a27b5859af2
+Signed-off-by: Jacob Chen <jacob-chen@iotwrt.com>
+---
+ drivers/media/platform/rockchip-rga/rga-hw.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/platform/rockchip-rga/rga-hw.c b/drivers/media/platform/rockchip-rga/rga-hw.c
+index ee81aff..86331adc 100644
+--- a/drivers/media/platform/rockchip-rga/rga-hw.c
++++ b/drivers/media/platform/rockchip-rga/rga-hw.c
+@@ -13,6 +13,7 @@
+  */
+ 
+ #include <linux/pm_runtime.h>
++#include <linux/kernel.h>
+ 
+ #include "rga-hw.h"
+ #include "rga.h"
+@@ -52,7 +53,7 @@ static unsigned int rga_get_scaling(unsigned int src, unsigned int dst)
+ 
+ static struct rga_corners_addr_offset
+ rga_get_addr_offset(struct rga_frame *frm, unsigned int x, unsigned int y,
+-		    unsigned int w, unsigned int h)
++		    unsigned int w, unsigned int h, unsigned int workaround)
+ {
+ 	struct rga_corners_addr_offset offsets;
+ 	struct rga_addr_offset *lt, *lb, *rt, *rb;
+@@ -75,6 +76,12 @@ rga_get_addr_offset(struct rga_frame *frm, unsigned int x, unsigned int y,
+ 		frm->width * frm->height + (y / y_div) * uv_stride + x / x_div;
+ 	lt->v_off = lt->u_off + frm->width * frm->height / uv_factor;
+ 
++	if(frm->fmt->fourcc == V4L2_PIX_FMT_NV12 && workaround) {
++		lt->u_off = DIV_ROUND_UP(frm->width, 32) * 32 * 
++			DIV_ROUND_UP(frm->height, 32) * 32
++			+ (y / y_div) * uv_stride + x / x_div;
++	}
++
+ 	lb->y_off = lt->y_off + (h - 1) * frm->stride;
+ 	lb->u_off = lt->u_off + (h / y_div - 1) * uv_stride;
+ 	lb->v_off = lt->v_off + (h / y_div - 1) * uv_stride;
+@@ -247,7 +254,7 @@ static void rga_cmd_set_trans_info(struct rga_ctx *ctx)
+ 		dst_act_info.data.act_width = dst_w - 1;
+ 
+ 		offsets = rga_get_addr_offset(&ctx->out, dst_x, dst_y,
+-					      dst_w, dst_h);
++					      dst_w, dst_h, 0);
+ 		dst_offset = &offsets.left_top;
+ 
+ 		goto write_dst;
+@@ -340,12 +347,12 @@ static void rga_cmd_set_trans_info(struct rga_ctx *ctx)
+ 	 * Cacluate the source framebuffer base address with offset pixel.
+ 	 */
+ 	src_offsets = rga_get_addr_offset(&ctx->in, src_x, src_y,
+-					  src_w, src_h);
++					  src_w, src_h, 1);
+ 
+ 	/*
+ 	 * Configure the dest framebuffer base address with pixel offset.
+ 	 */
+-	offsets = rga_get_addr_offset(&ctx->out, dst_x, dst_y, dst_w, dst_h);
++	offsets = rga_get_addr_offset(&ctx->out, dst_x, dst_y, dst_w, dst_h, 0);
+ 	dst_offset = rga_lookup_draw_pos(&offsets, src_info.data.rot_mode,
+ 					 src_info.data.mir_mode);
+ 
+-- 
+2.7.4
+
