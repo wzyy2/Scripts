@@ -1,0 +1,11 @@
+Copy `gnome.session` file locally:
+$ cp /usr/share/gnome-session/sessions/gnome.session ~/.config/gnome-session/sessions/gnome-wayland.session
+Edit it to use `org.gnome.Shell-Wayland`:
+$ less ~/.config/gnome-session/sessions/gnome-wayland.session
+...
+RequiredComponents=org.gnome.Shell-Wayland;gnome-settings-daemon;
+...
+Now you can run a wayland session:
+$ XDG_SESSION_TYPE=wayland gnome-session --session=gnome-wayland
+
+XDG_SESSION_TYPE=wayland gnome-session --session=gnome-dummy
