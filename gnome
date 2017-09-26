@@ -9,3 +9,5 @@ Now you can run a wayland session:
 $ XDG_SESSION_TYPE=wayland gnome-session --session=gnome-wayland
 
 XDG_SESSION_TYPE=wayland gnome-session --session=gnome-dummy
+export XDG_SESSION_TYPE=wayland
+dbus-run-session gnome-session
