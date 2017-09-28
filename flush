@@ -51,3 +51,7 @@ static int rkisp1_isp_sd_get_fmt(struct v4l2_subdev *sd,
 {
 	struct v4l2_mbus_framefmt *mf = &fmt->format;
 	struct rkisp1_isp_subdev *isp_sd = sd_to_isp_sd
+	
+	
+	
+xinput --set-prop "pointer:PixArt USB Optical Mouse" "libinput Accel Speed"  0.75
