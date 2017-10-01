@@ -42,15 +42,7 @@ git send-email  v2-0001-arm64-dts-rockchip-add-rk3399-hdmi-nodes.patch --to linu
   -cc hans.verkuil@cisco.com  -cc tfiga@chromium.org -cc nicolas@ndufresne.ca
 
 
-   git send-email   --to linux-rockchip@lists.infradead.org --cc linux-kernel@vger.kernel.org -cc roliveir@synopsys.com -cc linux-media@vger.kernel.org \
-   -cc mchehab@kernel.org -cc vladimir_zapolskiy@mentor.com -cc hans.verkuil@cisco.com -cc sakari.ailus@linux.intel.com
-
-   Ramiro Oliveira <roliveir@synopsys.com> (maintainer:OMNIVISION OV5647 SENSOR DRIVER)
-Mauro Carvalho Chehab <mchehab@kernel.org> (maintainer:MEDIA INPUT INFRASTRUCTURE (V4L/DVB))
-linux-media@vger.kernel.org (open list:OMNIVISION OV5647 SENSOR DRIVER)
-linux-kernel@vger.kernel.org (open list)
-
-git send-email  0001-media-i2c-OV5647-ensure-clock-lane-in-LP-11-state-be.patch  --cc linux-kernel@vger.kernel.org -cc roliveir@synopsys.com -cc linux-media@vger.kernel.org \
+   git send-email  ov5647/* --cc linux-kernel@vger.kernel.org  -to linux-media@vger.kernel.org \
    -cc mchehab@kernel.org -cc vladimir_zapolskiy@mentor.com -cc hans.verkuil@cisco.com -cc sakari.ailus@linux.intel.com -cc lolivei@synopsys.com -cc p.zabel@pengutronix.de
 
 
