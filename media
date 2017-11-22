@@ -1,0 +1,4 @@
+./media-ctl -d /dev/media0 -p
+
+./media-ctl -l '"ov2685 7-0010":0->"rockchip-sy-mipi-dphy":0[1]'
+./media-ctl -l '"ov5695 7-0036":0->"rockchip-sy-mipi-dphy":0[0]'
