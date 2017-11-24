@@ -48,3 +48,10 @@ git send-email  v2-0001-arm64-dts-rockchip-add-rk3399-hdmi-nodes.patch --to linu
 
 git send-email ./tc35/*   --cc linux-kernel@vger.kernel.org  -cc linux-media@vger.kernel.org -cc mchehab@kernel.org \
  -cc matrandg@cisco.com -cc p.zabel@pengutronix.de -cc hansverk@cisco.com -cc dave.stevenson@raspberrypi.org
+
+
+ git send-email  isp/* --to linux-rockchip@lists.infradead.org --cc linux-kernel@vger.kernel.org -cc linux-arm-kernel@lists.infradead.org \
+  -cc mchehab@kernel.org -cc linux-media@vger.kernel.org -cc sakari.ailus@linux.intel.com \
+  -cc hans.verkuil@cisco.com  -cc tfiga@chromium.org cc zhengsq@rock-chips.com  -cc laurent.pinchart@ideasonboard.com \
+  -cc zyc@rock-chips.com -cc eddie.cai.linux@gmail.com -cc jeffy.chen@rock-chips.com -cc allon.huang@rock-chips.com \
+  -cc devicetree@vger.kernel.org  -cc heiko@sntech.de   -cc robh+dt@kernel.org 
