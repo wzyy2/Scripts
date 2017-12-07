@@ -6,6 +6,7 @@ RGBx
 
 gnome player
 gst-launch-1.0  filesrc location=/1.mkv ! matroskademux  ! queue !  h264parse ! mppvideodec ! kmssink
+gst-launch-1.0  filesrc location=/home/linaro/Downloads/1920x1072-hevc.mp4 ! qtdemux  !  aacparse ! mppvideodec ! kmssink
 
 gst-launch-1.0 uridecodebin uri=file:///1.mkv  ! waylandsink
 
