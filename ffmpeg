@@ -38,6 +38,8 @@ image/jpeg,width=1920,height=1080,framerate=30/1 ! decodebin !  videoconvert ! v
 //jpeg
 gst-launch-1.0  filesrc location=2.mjpeg  ! multipartdemux !  jpegdec !  videoconvert ! vaapisink
 
+./mpi_enc_test -i quizkiss_640x480.yuv -w 640 -h 480 -t 8 -o test.jpg
+
 gst-launch-1.0 -v videotestsrc  ! "video/x-raw,width=1920,height=1080"  ! queue ! jpegenc ! queue ! jpegparse ! queue ! mppvideodec ! kmssink 
 
 // rga
