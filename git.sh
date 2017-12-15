@@ -57,4 +57,5 @@ git send-email ./tc35/*   --cc linux-kernel@vger.kernel.org  -cc linux-media@vge
   -cc devicetree@vger.kernel.org  -cc heiko@sntech.de   -cc robh+dt@kernel.org -cc Joao.Pinto@synopsys.com   \
   -cc Luis.Oliveira@synopsys.com -cc Jose.Abreu@synopsys.com
   
-  gbp dch --debian-branch debian -s release_20170811
+gbp dch --debian-branch debian -s release_20170811
+gbp dch --debian-branch rockchip -R -c
