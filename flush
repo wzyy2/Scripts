@@ -1,58 +1,36 @@
 sudo sh -c 'echo 3 >/proc/sys/vm/drop_caches'
 
+scp chen@192.168.31.163:/home/chen/workbench/debian-sdk/packages/gstreamer1.0-rockchip1-extra_20171218-2_armhf.deb ./
+dpkg -i ./*.deb
 
-/* just for test */
-#if  1
-/* For compatibility with UVC program, we have to use this funciton,
- * to allow this driver run out-of-box. If you are writing your
- * own applications, please don't depend on this funciton,
- * each media entity should be configured properly by userspace before streamon.
- */
-static void __reset_entities_config(struct rkisp1_device *isp_dev)
-{
-	struct rkisp1_isp_subdev *isp_sd = &isp_dev->isp_sdev;
-	struct v4l2_subdev_format fmt;
-	const struct rkisp1_fmt *cif_fmt;
+scp chen@192.168.31.163:/home/chen/workbench/debian-sdk/rk-rootfs-build/overlay-firmware/etc/cam_iq/imx219.xml /etc/cam_iq/imx2
+19.xml
 
-	fmt.pad = 0;
-	v4l2_subdev_call(isp_dev->subdevs[RKISP1_SD_SENSOR],
-			 pad, get_fmt, NULL, &fmt);
+scp chen@192.168.31.163:/home/chen/workbench/debian-sdk/out/kernel/* boot/
+sync
 
-	if (fmt.format.code != isp_sd->in_fmt.mbus_code ||
-	    fmt.format.width != isp_sd->in_acqui.width ||
-	    fmt.format.height != isp_sd->in_acqui.height) {
-		v4l2_warn(&isp_dev->v4l2_dev,
-			  "TEST-ONLY: Reset subdev settigs......\n");
-	}
+#!/bin/sh
 
-	isp_sd->in_acqui.width = fmt.format.width;
-	isp_sd->in_acqui.height = fmt.format.height;
-	cif_fmt = rkisp1_isp_sd_find_fmt(RKISP1_ISP_PAD_SINK,
-						fmt.format.code, -1);
-	if (!cif_fmt) {
-		v4l2_warn(&isp_dev->v4l2_dev,
-			  "Unsuppoted sensor input format......\n");
-		return;
-	}
+export DISPLAY=:0.0 
+#exxort GST_DEBUG=ispsrc:5
+#export GST_DEBUG_FILE=/tmp/2.txt
 
-	isp_sd->in_fmt = *cif_fmt;
-	isp_sd->in_crop = isp_sd->in_acqui;
-	isp_sd->out_win = isp_sd->in_crop;
-	isp_sd->out_crop = isp_sd->out_win;
-	isp_dev->stream[RKISP1_STREAM_SP].dcrop = isp_sd->out_win;
-	isp_dev->stream[RKISP1_STREAM_MP].dcrop = isp_sd->out_win;
-}
-#endif
+service lightdm stop
 
-#define sd_to_isp_sd(_sd) container_of(_sd, struct rkisp1_isp_subdev, sd)
-static int rkisp1_isp_sd_get_fmt(struct v4l2_subdev *sd,
-				 struct v4l2_subdev_pad_config *cfg,
-				 struct v4l2_subdev_format *fmt)
-{
-	struct v4l2_mbus_framefmt *mf = &fmt->format;
-	struct rkisp1_isp_subdev *isp_sd = sd_to_isp_sd
-	
-	
-	
-xinput --set-prop "pointer:PixArt USB Optical Mouse" "libinput Accel Speed"  0.75
-netstat -tunl
+echo 1 > /sys/module/video_rkisp1/parameters/debug
+
+gst-launch-1.0 rkcamsrc device=/dev/video1 tuning-xml-path=/etc/cam_iq/imy219.xml io-mode=4 isp-mode=2A ! videoconvert ! video/
+x-raw,format=NV12,width=1920,height=1080  ! kmssink
+
+#!/bin/sh
+
+export DISPLAY=:0.0 
+#export GST_DEBUG=ispsrc:5
+#export GST_DEBUG_FILE=/tmp/2.txt
+
+service0lightdm stop
+
+echo 1 > /sys/module/video_rkisp1/parameters/debug
+
+gst-launch-1.0 rkcamsrc device=/dev/video1 io-mode=4 isp-mode=0A ! videoconvert ! video/x-raw,format=NV12,width=640,height=480 
+ ! kmssink
