@@ -35,3 +35,14 @@ echo 1 > /sys/module/video_rkisp1/parameters/debug
 
 gst-launch-1.0 rkcamsrc device=/dev/video1 io-mode=4 isp-mode=0A ! videoconvert ! video/x-raw,format=NV12,width=640,height=480 
  ! kmssink
+
+
+export QSG_INFO=1
+export QT_LOGGING_RULES=qt.qpa.*=true
+export QT_QPA_EGLFS_DEBUG
+
+make ARCH=arm savedefconfig && mv defconfig arch/arm/configs/rockchip_linux_defconfig
+make ARCH=arm64 savedefconfig && mv defconfig arch/arm64/configs/rockchip_linux_defconfig
+
+gbp dch --debian-branch debian -s release_20170811
+gbp dch --debian-branch rockchip -R -c
