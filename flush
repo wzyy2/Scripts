@@ -53,3 +53,5 @@ roslaunch asp_bringup cloud_platform.launch
 roslaunch chiturobot_bringup chitu_robot_ymr01.launch
 roslaunch chiturobot_bringup perception.launch
 
+rosrun robot_upstart install chiturobot_bringup/launch/A_robot_upstart.launch
+
