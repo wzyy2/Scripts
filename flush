@@ -52,6 +52,20 @@ gbp dch --debian-branch rockchip -R -c
 roslaunch asp_bringup cloud_platform.launch
 roslaunch chiturobot_bringup chitu_robot_ymr01.launch
 roslaunch chiturobot_bringup perception.launch
+roslaunch chiturobot_bringup system.launch
+roslaunch vector_map_server vector_map_server.launch
+roslaunch  common_algo tiled_map_manager.launch
+roslaunch has_local_planner planning_costmap.launch
+roslaunch trajectory_follower mpc.launch
+roslaunch trajectory_follower navigate_status.launch
 
+roslaunch change_inflation change_inflation.launch
+roslaunch freespace_detection free_space.launch
+
+roslaunch robot_diagnostic robot_diagnostic.launch
+
+roslaunch decision_maker decision_maker.launch 
+roslaunch has_local_planner planning_costmap.launch
+roslaunch loam_localization loam_locate.launch
 rosrun robot_upstart install chiturobot_bringup/launch/A_robot_upstart.launch
 rosrun robot_upstart install asp_bringup/launch/cloud_platform.launch
