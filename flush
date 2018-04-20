@@ -48,3 +48,8 @@ gbp dch --debian-branch debian -s release_20170811
 gbp dch --debian-branch rockchip -R -c
 
  mkimage -A arm -O linux -T kernel -C none -a 0x02008000 -e 0x02008000 -n 4.4 -d ./Image  ./uImage
+
+roslaunch asp_bringup cloud_platform.launch
+roslaunch chiturobot_bringup chitu_robot_ymr01.launch
+roslaunch chiturobot_bringup perception.launch
+
