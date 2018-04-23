@@ -59,6 +59,11 @@ function mock_hal_test {
 	v4l2-ctl -d /dev/video3 --set-selection=target=crop,top=0,left=0,width=$WIDTH_CROP,height=$HEIGHT_CROP --set-fmt-video=width=$WIDTH,height=$HEIGHT,pixelformat=NV21 --stream-mmap=8 --stream-to=/tmp/self.stream.out --stream-count=3 --stream-poll > /dev/kmsg 2>&1
 }
 
+v4l2-ctl -d /dev/video0 --set-fmt-video=width=720,height=480,pixelformat=MJPG --stream-mmap=8 --stream-to=/tmp/self.stream.out0  --stream-poll  > /dev/kmsg 2>&1
+v4l2-ctl -d /dev/video2 --set-fmt-video=width=720,height=480,pixelformat=MJPG --stream-mmap=8 --stream-to=/tmp/self.stream.out2  --stream-poll  > /dev/kmsg 2>&1
+v4l2-ctl -d /dev/video4 --set-fmt-video=width=720,height=480,pixelformat=MJPG --stream-mmap=8 --stream-to=/tmp/self.stream.out4  --stream-poll  > /dev/kmsg 2>&1
+v4l2-ctl -d /dev/video6 --set-fmt-video=width=720,height=480,pixelformat=MJPG --stream-mmap=8 --stream-to=/tmp/self.stream.out6   --stream-poll 
+
 links_enable
 trace_on
 mock_hal_test
