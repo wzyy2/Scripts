@@ -73,3 +73,4 @@ rosrun robot_upstart install chiturobot_bringup/launch/A_robot_upstart.launch
 
 rosrun robot_upstart install chitu_bringup/autogo_drivers.launch
 rosrun robot_upstart install asp_bringup/launch/cloud_platform.launch
+ sudo systemctl daemon-reload && sudo systemctl start chitu
