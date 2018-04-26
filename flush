@@ -487,7 +487,7 @@ roslaunch traffic_light_detection traffic_light_detection.launch
 
     libturbojpeg
 libhidapi-libusb0
-
+cppad
 
 
 
