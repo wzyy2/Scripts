@@ -447,3 +447,83 @@ roslaunch asp_bringup cloud_platform.launch
 /zed_front_up/zed_wrapper_node/parameter_updates
 
 
+perception
+branch: 2.0.0_20180318_perception3d_deb_pacakge
+
+autogo-drvier
+branch: develop
+
+vim /opt/ros/kinetic/share/chitu_bringup/launch/autogo_drivers.launch
+
+asp-cloud-platform
+branch: feature/mqtt-201803-deb-package
+
+autogo-localization
+branch: feature/2.5.2_YunM_deb
+
+
+autogo-freespace
+feature/1.1.0_20180413_freespace
+
+
+command:
+sudo systemctl stop chitu
+sudo systemctl stop asp
+
+sudo systemctl start chitu
+sudo systemctl start asp
+
+roslaunch chitu_bringup autogo_drivers.launch
+
+roslaunch asp_bringup cloud_platform.launch
+
+// 感知
+roslaunch laser_ransac_tracking tracking.launch
+roslaunch grab_image grab_image.launch
+roslaunch traffic_light_detection traffic_light_detection.launch
+
+
+
+
+    libturbojpeg
+libhidapi-libusb0
+
+
+
+
+administrator@YM-R01N004:~$ rostopic info pointcloud_merged_downsample_costmap
+Type: sensor_msgs/PointCloud2
+
+Publishers: 
+ * /pcl_3d_manager (http://YM-R01N004:45429/)
+
+Subscribers: 
+ * /roi_filter_cost_map_node (http://YM-R01N004:32987/)
+ * /remove_dynamic_point_cloud_node (http://YM-R01N004:35949/)
+
+
+administrator@YM-R01N004:~$ rostopic info aft_dyn_to_init
+Type: nav_msgs/Odometry
+
+Publishers: 
+ * /locateMapCorrect (http://YM-R01N004:44273/)
+
+Subscribers: 
+ * /decision_maker_node (http://YM-R01N004:45853/)
+ * /roi_filter_tracklets_node (http://YM-R01N004:38091/)
+ * /roi_filter_cost_map_node (http://YM-R01N004:32987/)
+ * /change_inflation (http://YM-R01N004:42967/)
+ * /remove_dynamic_point_cloud_node (http://YM-R01N004:35949/)
+ * /auto_percent (http://YM-R01N004:39613/)
+ * /record_1524733305859728495 (http://YM-R01N004:35685/)
+ * /record_1524733305912871082 (http://YM-R01N004:44971/)
+ * /loamOut (http://YM-R01N004:44885/)
+ * /SensorMonitor (http://YM-R01N004:44049/)
+ * /removeGroundPlaneuni_ns2 (http://YM-R01N004:46743/)
+ * /removeGroundPlaneuni_ns1 (http://YM-R01N004:45355/)
+ * /pubEKF (http://YM-R01N004:33149/)
+ * /heart_sender (http://YM-R01N004:46057/)
+
+
+augoto: feature/2.5.1_20180201_YunM
+autogo-perception: feature/2.0.0_20180318_perception3d
