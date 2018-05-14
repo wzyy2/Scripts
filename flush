@@ -58,3 +58,12 @@ gbp dch --debian-branch debian -s release_20170811
 gbp dch --debian-branch rockchip -R -c
 
  mkimage -A arm -O linux -T kernel -C none -a 0x02008000 -e 0x02008000 -n 4.4 -d ./Image  ./uImage
+ 
+ mount -n -t jffs2 /dev/mtdblock3 -o rw,noatime,mode=0755 /overlay
+mount -n -t overlayfs overlayfs:/overlay -o rw,noatime,lowerdir=/,upperdir=/overlay /mnt
+mount -n /proc -o noatime,--move /mnt/proc
+pivot_root /mnt /mnt/rom 
+mount -n /rom/dev -o noatime,--move /dev
+mount -n /rom/tmp -o noatime,--move /tmp
+mount -n /rom/sys -o noatime,--move /sys
+mount -n /rom/overlay -o noatime,--move /overlay
