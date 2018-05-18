@@ -67,3 +67,9 @@ mount -n /rom/dev -o noatime,--move /dev
 mount -n /rom/tmp -o noatime,--move /tmp
 mount -n /rom/sys -o noatime,--move /sys
 mount -n /rom/overlay -o noatime,--move /overlay
+
+
+/usr/sbin/grub-mkconfig
+GRUB_DEVICE="`${grub_probe} --target=device /`"
+#export GRUB_DEVICE=/dev/sda5
+#sudo update-grub
