@@ -89,6 +89,12 @@ rm -rf ~/.cache/gstreamer-1.0/registry.arm.bin  && rm -rf /home/linaro/.cache/gs
 export DISPLAY=:0.0
 export GST_DEBUG=*:5
 export QT_QPA_PLATFORM=wayland-egl
+
+
+gst-launch-1.0 imxv4l2videosrc device=/dev/video0 ! "video/x-raw,width=1280,height=720" ! queue ! imxvpuenc_h264 ! udpsink host=30.116.64.1 port=5000 async=false
+
+gst-launch-1.0 -v videotestsrc ! video/x-raw,framerate=20/1 ! videoscale ! videoconvert ! x264enc tune=zerolatency bitrate=500 speed-preset=superfast ! rtph264pay ! udpsink host=127.0.0.1 port=5000
+gst-launch-1.0 -v udpsrc port=5000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" ! rtph264depay ! decodebin ! videoconvert ! autovideosink
 export XDG_RUNTIME_DIR=/run/user/0
 export WAYLAND_DISPLAY=wayland-0
 
