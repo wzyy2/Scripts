@@ -1,6 +1,10 @@
 sudo sh -c 'echo 3 >/proc/sys/vm/drop_caches'
 ffmpeg -i mjpegvideo.avi -vcodec copy frame%d.jpg
 
+
+qemu-system-x86_64 -m 512 -curses -hda disk1 -enable-kvm
+
+
 scp chen@192.168.31.163:/home/chen/workbench/debian-sdk/packages/gstreamer1.0-rockchip1-extra_20171218-2_armhf.deb ./
 dpkg -i ./*.deb
 
