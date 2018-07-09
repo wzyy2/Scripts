@@ -77,3 +77,6 @@ mount -n /rom/overlay -o noatime,--move /overlay
 GRUB_DEVICE="`${grub_probe} --target=device /`"
 #export GRUB_DEVICE=/dev/sda5
 #sudo update-grub
+
+
+git repack --max-pack-size=200m
