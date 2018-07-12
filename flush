@@ -5,6 +5,25 @@ ffmpeg -i mjpegvideo.avi -vcodec copy frame%d.jpg
 qemu-system-x86_64 -m 512 -curses -hda /dev/sdc -enable-kvm -display sdl
 qemu-system-x86_64 -usb -usbdevice disk:/dev/sda -m 512 -display sdl
 
+
+sudo ifconfig can0 down
+sudo ifconfig can1 down
+
+sudo ip link set can1 type can bitrate 500000
+sudo ip link set up can1
+
+sudo ip link set can0 type can bitrate 500000
+sudo ip link set up can0
+
+
+
+auto can0
+iface can0 inet manual
+        pre-up /sbin/ip link set $IFACE type can bitrate 500000 on
+        up /sbin/ifconfig $IFACE up
+        down /sbin/ifconfig $IFACE down
+        
+        
 scp chen@192.168.31.163:/home/chen/workbench/debian-sdk/packages/gstreamer1.0-rockchip1-extra_20171218-2_armhf.deb ./
 dpkg -i ./*.deb
 
