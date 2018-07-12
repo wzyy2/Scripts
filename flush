@@ -80,3 +80,18 @@ GRUB_DEVICE="`${grub_probe} --target=device /`"
 
 
 git repack --max-pack-size=200m
+
+
+sudo ip link set can1 type can bitrate 500000
+sudo ip link set up can1
+
+sudo ip link set can0 type can bitrate 500000
+sudo ip link set up can0
+
+
+
+auto can0
+iface can0 inet manual
+        pre-up /sbin/ip link set $IFACE type can bitrate 500000 on
+        up /sbin/ifconfig $IFACE up
+        down /sbin/ifconfig $IFACE down
