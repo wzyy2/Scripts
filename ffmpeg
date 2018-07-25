@@ -4,6 +4,13 @@ ffprobe -v error -show_format -show_streams
 
 RGBx
 
+
+
+
+gst-launch-1.0 -v videotestsrc ! "video/x-raw,width=1280,height=960,framerate=20/1" ! queue ! x264enc bitrate=4096 ! h264parse  \
+ ! mpegtsmux! filesink location=test.ts
+gst-launch-1.0  filesrc location=test.ts ! tsdemux ! queue !  h264parse ! avdec_h264 ! fakesink
+
 gnome player
 gst-launch-1.0  filesrc location=/1.mkv ! matroskademux  ! queue !  h264parse ! mppvideodec ! kmssink
 gst-launch-1.0  filesrc location=/home/linaro/Downloads/1920x1072-hevc.mp4 ! qtdemux  !  aacparse ! mppvideodec ! kmssink
