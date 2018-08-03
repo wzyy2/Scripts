@@ -109,7 +109,7 @@ export WAYLAND_DISPLAY=wayland-0
  gst-launch-1.0 filesrc location=/home/user/Videos/out.yuv ! videoparse width=1920 height=816 framerate=24/1 format=nv12 ! autovideoconvert ! autovideosink
 
 
-gst-launch-1.0 -e videomixer name=mix sink_0::xpos=0 sink_0::ypos=0 width=5120 height=1440 \
+gst-launch-1.0 -e videomixer name=mix sink_0::xpos=0 sink_0::ypos=0 \
     sink_1::xpos=1280 sink_1::ypos=0 \
     sink_2::xpos=2560 sink_2::ypos=0 \
     sink_3::xpos=3840 sink_3::ypos=0 \
@@ -117,7 +117,7 @@ gst-launch-1.0 -e videomixer name=mix sink_0::xpos=0 sink_0::ypos=0 width=5120 h
     sink_5::xpos=1280 sink_5::ypos=720 \
     sink_6::xpos=2560 sink_6::ypos=720 \
     sink_7::xpos=3840 sink_7::ypos=720 \
-    ! x264enc bitrate=5120 ! avimux ! filesink location=ym2.avi \
+    ! video/x-raw, width=5120, height=1440 ! x264enc bitrate=20480 ! qtmux !  filesink location=ym2.mp4 \
     filesrc location=out0.avi ! avidemux ! h264parse ! avdec_h264 ! videoconvert \
             ! video/x-raw, width=1280, height=720 \
             ! mix.sink_4 \
