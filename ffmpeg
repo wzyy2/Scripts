@@ -37,6 +37,9 @@ mediainfo 2.jpg
 convert image.jpg -profile sRGB.icc rgb_image.jpg
 
 //kms
+
+
+ps -e -L h o state,ucmd  | awk '{if($1=="R"||$1=="D"){print $0}}' | sort | uniq -c | sort -k 1nr
 gst-launch-1.0  filesrc location=2.mjpeg ! \
 image/jpeg,width=1920,height=1080,framerate=30/1 ! decodebin !  videoconvert ! vaapisink
 
