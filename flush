@@ -123,3 +123,5 @@ iface can0 inet manual
         echo $i; sudo dpkg-reconfigure $i;
     done
 ) 2>&1 | tee dpkg-reconfigure.log
+
+truncate -s 0 /var/log/syslog
