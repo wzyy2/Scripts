@@ -147,6 +147,6 @@ gst-launch-1.0 -e videomixer name=mix sink_0::xpos=0 sink_0::ypos=0 \
             ! mix.sink_3
             
             
-  gst-launch-1.0 filesrc location=2000.h264 ! h264parse ! avdec_h264 ! x264enc bitrate=640 ! filesink=800-x264enc.h264
+ gst-launch-1.0 filesrc location=2000.h264 ! h264parse ! avdec_h264 ! x264enc bitrate=640 ! filesink location=640-x264enc.h264
   
   
