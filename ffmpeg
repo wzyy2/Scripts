@@ -163,3 +163,4 @@ gst-launch-1.0 filesrc location=2000.h264  ! h264parse ! omxh264dec !  videorate
   
  gst-launch-1.0 filesrc location=2000.h264  ! h264parse ! omxh264dec !  videorate ! video/x-raw,framerate=30/1 ! x264enc bitrate=640 ! h264parse ! qtmux ! filesink location=640-x264-nv.mp4
  
+v4l2-ctl -d /dev/video0 --set-fmt-video=width=1280,height=720,pixelformat=MJPG   --stream-mmap=8 --stream-to=/tmp/self.stream.out0 --stream-poll
