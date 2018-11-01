@@ -129,3 +129,4 @@ truncate -s 0 /var/log/syslog
 echo q | htop | aha --black --line-fix > htop.html
 
 jq -r ".modules_history | keys[]"
+cat /etc/autogo/.autogo_update/data_current.json  | jq -r ".[] | .[] | .type "
