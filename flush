@@ -129,5 +129,11 @@ truncate -s 0 /var/log/syslog
 echo q | htop | aha --black --line-fix > htop.html
 
 jq -r ".modules_history | keys[]"
-cat /etc/autogo/.autogo_update/data_current.json  | jq -r ".[] | .[] | .type "
+cat /etc/11/.11/data_current.json  | jq -r ".[] | .[] | .type "
  jq '.modules_history."'${NAME}'" = "'${VERSION}'"' 
+
+
+for file in $LIST; do
+	apt-get remove $file -s | grep ros 1>/dev/null 2>&1
+	if [ $? -eq 0 ]; then echo $file; fi
+done
