@@ -137,3 +137,6 @@ for file in $LIST; do
 	apt-get remove $file -s | grep ros 1>/dev/null 2>&1
 	if [ $? -eq 0 ]; then echo $file; fi
 done
+
+    stats_dict = collections.defaultdict(lambda: collections.defaultdict(
+        lambda: collections.defaultdict(lambda: collections.defaultdict(list))))
