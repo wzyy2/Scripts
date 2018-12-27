@@ -37,6 +37,10 @@ sync
 
 #!/bin/sh
 
+
+
+sudo lsof | awk '{ print $2; }' | uniq -c | sort -rn | head
+
 export DISPLAY=:0.0 
 #exxort GST_DEBUG=ispsrc:5
 #export GST_DEBUG_FILE=/tmp/2.txt
