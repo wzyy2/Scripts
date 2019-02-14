@@ -151,3 +151,6 @@ alias mytop='echo $(sed "s/\([0-9]*\)/-p \1/g;s/^/top /" <(pgrep -d" " "lttng::"
 
 cat /proc/sys/fs/file-max
 sudo lsof | awk '{ print $2; }' | uniq -c | sort -rn | head
+
+
+>> /usr/local/node/output.log 2>&1 
