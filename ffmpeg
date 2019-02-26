@@ -36,6 +36,10 @@ gst-launch-1.0 -v filesrc location=lotus_3288.yuv ! \
 mediainfo 2.jpg
 convert image.jpg -profile sRGB.icc rgb_image.jpg
 
+
+arecord -f S16_LE -c1 -r22050 -t raw | lame -r -s 22.05 -m m -b 64 - Output.mp3
+aplay -D hw:0,0 -d 1 -f cd /dev/zero
+
 //kms
 
 
