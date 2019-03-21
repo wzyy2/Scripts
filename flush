@@ -156,3 +156,7 @@ sudo lsof | awk '{ print $2; }' | uniq -c | sort -rn | head
 >> /usr/local/node/output.log 2>&1 
 
  find -name "*.h"  | xargs sed -ie '/ \*aaa /,/\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*/d'
+
+
+sar -w 1 3
+pidstat -w
