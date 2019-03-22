@@ -160,3 +160,4 @@ sudo lsof | awk '{ print $2; }' | uniq -c | sort -rn | head
 
 sar -w 1 3
 pidstat -w
+netstat -ntp
