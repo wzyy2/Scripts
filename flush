@@ -161,3 +161,8 @@ sudo lsof | awk '{ print $2; }' | uniq -c | sort -rn | head
 sar -w 1 3
 pidstat -w
 netstat -ntp
+
+
+find . 2>/dev/null |  cpio  --quiet  -o -H newc | gzip -9 > ../initrd.new
+zcat ../initrd | sudo cpio --extract --no-preserve-owner
+
