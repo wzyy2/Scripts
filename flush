@@ -166,3 +166,5 @@ netstat -ntp
 find . 2>/dev/null |  cpio  --quiet  -o -H newc | gzip -9 > ../initrd.new
 zcat ../initrd | sudo cpio --extract --no-preserve-owner
 
+
+cat file | tr -d '\000' | yourgrep
