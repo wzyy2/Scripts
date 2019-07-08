@@ -169,3 +169,5 @@ zcat ../initrd | sudo cpio --extract --no-preserve-owner
 
 cat file | tr -d '\000' | yourgrep
 ps -e -o s,pid,cls,pri | awk -v sq="'" '{print "pid",$2,sq,"s current scheduling policy:",$3,"\npid",$2,sq,"s current priority:",$4}'
+
+docker update --restart=unless-stopped
