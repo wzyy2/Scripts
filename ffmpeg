@@ -170,4 +170,8 @@ gst-launch-1.0 filesrc location=2000.h264  ! h264parse ! omxh264dec !  videorate
 v4l2-ctl -d /dev/video0 --set-fmt-video=width=1280,height=720,pixelformat=MJPG   --stream-mmap=8 --stream-to=/tmp/self.stream.out0 --stream-poll
 
 
-rcu signal
+gst-launch-1.0 tzcam ! tee name=raw \
+raw. ! queue ! nvvidconv left=0 right=1280 top=0 bottom=720  ! fpsdisplaysink video-sink=fakesink signal-fps-measurements=true text-overlay=false --gst-debug=fpsdisplaysink:6 \
+raw. ! queue ! nvvidconv left=1280 right=2560 top=0 bottom=720  ! fpsdisplaysink video-sink=fakesink signal-fps-measurements=true text-overlay=false --gst-debug=fpsdisplaysink:6 \
+raw. ! queue ! nvvidconv left=0 right=1280 top=720 bottom=1440  ! fpsdisplaysink video-sink=fakesink signal-fps-measurements=true text-overlay=false --gst-debug=fpsdisplaysink:6 \
+raw. ! queue ! nvvidconv left=1280 right=2560 top=720 bottom=1440  ! fpsdisplaysink video-sink=fakesink signal-fps-measurements=true text-overlay=false --gst-debug=fpsdisplaysink:6
